@@ -1,5 +1,8 @@
 local function sanitizer(str)
-    str = string.gsub(str, "[&<>\"'\n]+", "")
+    str = string.gsub(str, "[<>\"'\n]+", "")
+    str = string.gsub(str, '&#(%d+);', function(n) return string.char(n) end)
+    str = string.gsub(str, '&#x(%d+);', function(n) return string.char(tonumber(n,16)) end)
+    str = string.gsub(str, "&+", "&amp;")
     return str
 end
 
