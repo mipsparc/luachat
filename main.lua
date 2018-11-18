@@ -75,22 +75,26 @@ if ngx.req.get_method() == "GET" then
             <input type="hidden" name="sess" value="]] .. sessid .. [[">
             <input type="submit">
         </form>
-        </body>
-        </html>
-    ]])
+   ]])
     local names = redisObject:sinter("names")
     for i = 1, #names do
         ngx.say("<p>" .. names[i] .. "</p>")
     end
+    ngx.say([[
+        </body>
+        </html>
+    ]])
 
-else
+elseif ngx.req.get_method() == "POST" then
     ngx.req.read_body()
     local args, err = ngx.req.get_post_args()
     local name = sanitizer(args["name"])
     local sessid = args["sess"]
     if name and sessid then
+        cookie = cookie_init()
+        local sessid_cookie, err = cookie:get("sess")
         redisObject = redis_init()
-        if redisObject:sismember("sess", sessid) == 1 then
+        if sessid_cookie == sessid and redisObject:sismember("sess", sessid) == 1 then
             redisObject:sadd("names", name)
         end
     end
