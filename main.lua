@@ -69,7 +69,7 @@ if ngx.req.get_method() == "GET" then
         <!DOCTYPE html>
         <head><meta charset="UTF-8"></head>
         <body>
-        <p>What is your name?</p>
+        <p>名前を入力してね!</p>
         <form method="post" action="">
             <input type="text" name="name">
             <input type="hidden" name="sess" value="]] .. sessid .. [[">
