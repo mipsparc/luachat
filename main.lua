@@ -61,8 +61,8 @@ if ngx.req.get_method() == "GET" then
         redisObject:sadd("sess", sessid)
         local ok, err = cookie:set({
             key = "sess", value = sessid, path = "/",
-            domain = "35.221.102.183", httponly = true,
-            max_age = 300, samesite = "Strict"
+            httponly = true,
+            max_age = 315360, samesite = "Strict"
         })
     end
     ngx.say([[
