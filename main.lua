@@ -67,7 +67,7 @@ if ngx.req.get_method() == "GET" then
     end
     ngx.say([[
         <!DOCTYPE html>
-        <head><meta charset="UTF-8"></head>
+        <head><meta charset="UTF-8"><title>LuaChat</title></head>
         <body>
         <p>名前を入力してね!</p>
         <form method="post" action="">
