@@ -1,8 +1,9 @@
 local function sanitizer(str)
-    str = string.gsub(str, "[<>\"'\n\r]+", "")
-    str = string.gsub(str, '&#(%d+);', function(n) return string.char(n) end)
-    str = string.gsub(str, '&#x(%d+);', function(n) return string.char(tonumber(n,16)) end)
-    str = string.gsub(str, "&+", "&amp;")
+    local utf8 = require 'lua-utf8'
+    str = utf8.gsub(str, "[<>\"'\n]+", "")
+    str = utf8.gsub(str, '&#(%d+);', function(n) return utf8.char(n) end)
+    str = utf8.gsub(str, '&#x(%d+);', function(n) return utf8.char(tonumber(n,16)) end)
+    str = utf8.gsub(str, "&+", "&amp;")
     return str
 end
 
@@ -65,12 +66,17 @@ if ngx.req.get_method() == "GET" then
         })
     end
     ngx.say([[
+        <!DOCTYPE html>
+        <head><meta charset="UTF-8"></head>
+        <body>
         <p>What is your name?</p>
         <form method="post" action="">
             <input type="text" name="name">
             <input type="hidden" name="sess" value="]] .. sessid .. [[">
             <input type="submit">
         </form>
+        </body>
+        </html>
     ]])
     local names = redisObject:sinter("names")
     for i = 1, #names do
