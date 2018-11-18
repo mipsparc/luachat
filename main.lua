@@ -1,5 +1,5 @@
 local function sanitizer(str)
-    str = string.gsub(str, "[<>\"'\n]+", "")
+    str = string.gsub(str, "[<>\"'\n\r]+", "")
     str = string.gsub(str, '&#(%d+);', function(n) return string.char(n) end)
     str = string.gsub(str, '&#x(%d+);', function(n) return string.char(tonumber(n,16)) end)
     str = string.gsub(str, "&+", "&amp;")
@@ -82,14 +82,13 @@ else
     local args, err = ngx.req.get_post_args()
     local name = sanitizer(args["name"])
     local sessid = args["sess"]
-    if name then
-        ngx.say("<p>Hello, ", name, "! </p>")
-        ngx.say("<a href=\"\">Back to top</a>")
+    if name and sessid then
         redisObject = redis_init()
         if redisObject:sismember("sess", sessid) == 1 then
             redisObject:sadd("names", name)
         end
     end
+    return ngx.redirect("/")
 end
 
 
